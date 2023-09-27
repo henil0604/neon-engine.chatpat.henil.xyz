@@ -1,0 +1,35 @@
+{
+    "compilerOptions": {
+        "module": "NodeNext",
+        "moduleResolution": "NodeNext",
+        "sourceMap": true,
+        "declaration": true,
+        "declarationMap": true,
+        "resolveJsonModule": true,
+        "allowJs": true,
+        "noEmit": true,
+        "removeComments": true,
+        "strict": true,
+        "noFallthroughCasesInSwitch": true,
+        "noImplicitOverride": true,
+        "noImplicitReturns": true,
+        "useUnknownInCatchVariables": true,
+        "noUncheckedIndexedAccess": true,
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true,
+        "skipLibCheck": true,
+        "useDefineForClassFields": true,
+        "baseUrl": "./",
+        "paths": {
+            "@/*": [
+                "./app/*"
+            ]
+        },
+        "checkJs": true
+    },
+    "include": [
+        "app/**/*",
+        "tsup.config.ts"
+    ]
+}
