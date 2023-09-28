@@ -1,6 +1,6 @@
 {
   "name": "@chatpat/neon-engine",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Backend engine for chatpat that is responsible for handing all kind of requests required",
   "main": ".neon-engine/index.js",
   "type": "module",
