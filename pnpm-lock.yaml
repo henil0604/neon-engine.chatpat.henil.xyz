@@ -14,6 +14,9 @@ dependencies:
   dotenv:
     specifier: ^16.3.1
     version: 16.3.1
+  emittery:
+    specifier: ^1.0.1
+    version: 1.0.1
   zod:
     specifier: ^3.22.2
     version: 3.22.2
@@ -870,6 +873,11 @@ packages:
   /dotenv@16.3.1:
     resolution: {integrity: sha512-IPzF4w4/Rd94bA9imS68tZBaYyBWSCE47V1RGuMrB94iyTOIEwRmVL2x/4An+6mETpLrKJ5hQkB8W4kFAadeIQ==}
     engines: {node: '>=12'}
+    dev: false
+
+  /emittery@1.0.1:
+    resolution: {integrity: sha512-2ID6FdrMD9KDLldGesP6317G78K7km/kMcwItRtVFva7I/cSEOIaLpewaUb+YLXVwdAp3Ctfxh/V5zIl1sj7dQ==}
+    engines: {node: '>=14.16'}
     dev: false
 
   /esbuild@0.17.19:

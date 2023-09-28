@@ -8,3 +8,13 @@ export interface RouterFactoryContext {
 }
 
 export type RouterFactory = (context: RouterFactoryContext) => ServerRoute
+
+export type ServerEvents = {
+    before_start: void
+    start: number
+    before_stop: void
+    stop: {
+        reason: 'METHOD_CALLED',
+        timestamp: number
+    }
+}

@@ -35,33 +35,12 @@ var init_routes = __esm({
   }
 });
 
-// app/routes/stop.ts
-var stop_exports = {};
-__export(stop_exports, {
-  factory: () => factory2
-});
-var factory2;
-var init_stop = __esm({
-  "app/routes/stop.ts"() {
-    "use strict";
-    factory2 = /* @__PURE__ */ __name((ctx) => {
-      return {
-        method: "GET",
-        path: "/stop",
-        handler: (request, h) => {
-          ctx.factory.stop();
-          return "Stopped!";
-        }
-      };
-    }, "factory");
-  }
-});
-
 // app/modules/Database.ts
 import { PrismaClient } from "@prisma/client";
 var globalForPrisma = globalThis;
 var isDev = process.env.NODE_ENV === "development";
-var db = globalForPrisma.prisma ?? new PrismaClient({
+var db = globalForPrisma.prisma ?? // if the global object already has prisma, use it
+new PrismaClient({
   log: isDev ? ["query", "error", "warn"] : ["error"]
 });
 if (isDev)
@@ -91,33 +70,42 @@ var _Env = class {
 var Env = _Env;
 __name(Env, "Env");
 __publicField(Env, "Schema", {
-  PORT: z.string(),
-  USERNAME: z.string()
-  // Add more keys and their corresponding Zod types here
+  PORT: z.string()
 });
 
 // app/core/ServerFactory.ts
 import Hapi from "@hapi/hapi";
+import mitt from "mitt";
 var ServerFactory = class {
+  // Hapi Server instance
   server;
+  // Event Emitter that will be used to pass different events throughout server
+  events;
+  // stats of the server
   stats = {
     is_running: false
   };
   constructor() {
     this.server = Hapi.server({
+      // get port from Environment Variables
       port: Env.get("PORT")
     });
+    this.events = mitt();
   }
+  /*
+      start method is responsible for starting a server
+      it first starts the server
+      then changes the stats
+      then the $onServerStart Event is triggered
+  */
   async start() {
     await this.server.start();
     this.stats.is_running = true;
-    this.$onServerStart?.();
     return this;
   }
   async stop() {
     await this.server.stop();
     this.stats.is_running = false;
-    this.$onServerStop?.();
     return this;
   }
   addRoute(routerFactory) {
@@ -130,19 +118,12 @@ var ServerFactory = class {
       db
     };
   }
-  $onServerStart() {
-    console.log(`Server is running on port ${this.server.info.port}`);
-  }
-  $onServerStop() {
-    console.log(`Server is no more running`);
-  }
 };
 __name(ServerFactory, "ServerFactory");
 
 // app/modules/getRouterFactory.ts
 var Schema = {
-  "/": await Promise.resolve().then(() => (init_routes(), routes_exports)),
-  "/stop": await Promise.resolve().then(() => (init_stop(), stop_exports))
+  "/": await Promise.resolve().then(() => (init_routes(), routes_exports))
 };
 function getRouterFactory(path) {
   return Schema[path].factory;
@@ -151,7 +132,6 @@ __name(getRouterFactory, "getRouterFactory");
 
 // app/index.ts
 var Factory = new ServerFactory();
-Factory.start();
 Factory.addRoute(getRouterFactory("/"));
-Factory.addRoute(getRouterFactory("/stop"));
+Factory.start();
 //# sourceMappingURL=index.js.map

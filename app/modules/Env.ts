@@ -1,6 +1,10 @@
 import dotenv from 'dotenv';
 import { z, ZodSchema } from 'zod';
 
+/**
+ * Env module is responsible for fetching environment variables
+ * It also parses the result as per defined Zod Schema
+ */
 export default class Env {
     private constructor() { }
 
@@ -25,7 +29,5 @@ export default class Env {
 
     public static Schema = {
         PORT: z.string(),
-        USERNAME: z.string(),
-        // Add more keys and their corresponding Zod types here
     } as const;
 }
