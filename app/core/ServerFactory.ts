@@ -1,9 +1,10 @@
 import { db } from "@/modules/Database.js";
 import Env from "@/modules/Env.js";
 import { RouterFactory, RouterFactoryContext, ServerEvents } from "@/types/core.js";
-import Hapi from "@hapi/hapi";
 import Emittery from 'emittery';
-
+import http from "http";
+import express from "express";
+import * as SocketIo from 'socket.io';
 
 /*
     ServerStats Interface is where all boolean/meta values will be stored
@@ -20,8 +21,11 @@ export interface ServerStats {
     a way to bake the server
 */
 export default class ServerFactory {
-    // Hapi Server instance
-    public server: Hapi.Server;
+    // http app instance
+    public server: http.Server;
+
+    // express app instance
+    public app: express.Express;
 
     // Event Emitter that will be used to pass different events throughout server
     public emitter: Emittery<ServerEvents>;
@@ -31,15 +35,28 @@ export default class ServerFactory {
         is_running: false
     };
 
+    public io: SocketIo.Server;
+
     public constructor() {
-        // Creating new instance of Hapi server
-        this.server = Hapi.server({
-            // get port from Environment Variables
-            port: Env.get("PORT")
-        })
+        this.app = express();
+
+        this.server = http.createServer(this.app);
+
+        // creating socket.io server
+        this.io = new SocketIo.Server(this.server, {
+            // setting cors origin as * for testing
+            cors: {
+                origin: '*'
+            },
+        });
 
         this.emitter = new Emittery();
+    }
 
+    /**
+     * ? this method is currently empty as there is nothing to preprocess
+     */
+    public async preprocess() {
     }
 
     /*
@@ -51,7 +68,7 @@ export default class ServerFactory {
     public async start() {
         this.emitter.emit('before_start', void 0);
         // start hapi server
-        await this.server.start();
+        this.server.listen(Env.get("PORT"));
         // set is_running as true in server stats
         this.stats.is_running = true;
         // emit 'start' event 
@@ -62,7 +79,7 @@ export default class ServerFactory {
     public async stop() {
         this.emitter.emit('before_stop', void 0);
         // stop hapi server
-        await this.server.stop();
+        this.server.close();
         // set is_running as false in server stats
         this.stats.is_running = false;
         // emit 'stop' event 
@@ -73,10 +90,11 @@ export default class ServerFactory {
         return this;
     }
 
+    /**
+     * this method is responsible for calling routerFactory with the required context
+     */
     public addRoute(routerFactory: RouterFactory) {
-        // calls router factory that returns router data
-        const routerData = routerFactory(this.createRouterFactoryContext());
-        return this.server.route(routerData);
+        return routerFactory(this.createRouterFactoryContext());
     }
 
     private createRouterFactoryContext(): RouterFactoryContext {
