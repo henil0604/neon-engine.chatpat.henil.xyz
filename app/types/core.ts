@@ -1,4 +1,4 @@
-import ServerFactory from "@/core/ServerFactory.js";
+import ServerFactory from "@/modules/ServerFactory.js";
 import { db } from "@/modules/Database.js";
 
 export interface RouterFactoryContext {

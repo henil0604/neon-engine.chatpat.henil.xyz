@@ -46,7 +46,10 @@ export default class ServerFactory {
         this.io = new SocketIo.Server(this.server, {
             // setting cors origin as * for testing
             cors: {
-                origin: '*'
+                // ! COMMENT THIS IN PRODUCTION
+                origin: `*`
+                // ! UNCOMMENT BELOW LINE IN PRODUCTION
+                // origin: `${Env.get("FRONT_HOST")}`
             },
         });
 
@@ -63,7 +66,7 @@ export default class ServerFactory {
         start method is responsible for starting a server
         it first starts the server
         then changes the stats
-        then the $onServerStart Event is triggered
+        then the start Event is triggered
     */
     public async start() {
         this.emitter.emit('before_start', void 0);

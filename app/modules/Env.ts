@@ -29,5 +29,6 @@ export default class Env {
 
     public static Schema = {
         PORT: z.string(),
+        FRONT_HOST: z.string().url()
     } as const;
 }
