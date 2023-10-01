@@ -29,6 +29,8 @@ export default class Env {
 
     public static Schema = {
         PORT: z.string(),
-        FRONT_HOST: z.string().url()
+        FRONT_HOST: z.string().url(),
+        GITHUB_CLIENT_ID: z.string(),
+        GITHUB_CLIENT_SECRET: z.string()
     } as const;
 }

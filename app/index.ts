@@ -3,9 +3,9 @@ import getRouterFactory from "@/modules/getRouterFactory.js";
 import Env from "@/modules/Env.js";
 import { SocketHandlerInitializer } from "@/SocketHandlers/init.js";
 
-declare global {
-    var Factory: ServerFactory;
-}
+// declare global {
+//     var Factory: ServerFactory;
+// }
 
 // making a instance of ServerFactory
 const Factory = new ServerFactory();
@@ -21,6 +21,10 @@ Factory.emitter.on('start', (timestamp) => {
 
 // Adding a Routes
 Factory.addRoute(getRouterFactory("/"));
+Factory.addRoute(getRouterFactory("/auth"));
+Factory.addRoute(getRouterFactory("/auth/oauth"));
+Factory.addRoute(getRouterFactory("/auth/oauth/github"));
+Factory.addRoute(getRouterFactory("/auth/oauth/github/callback"));
 
 SocketHandlerInitializer()
 

@@ -5,6 +5,9 @@ import Emittery from 'emittery';
 import http from "http";
 import express from "express";
 import * as SocketIo from 'socket.io';
+import cookieParser from 'cookie-parser';
+import { auth } from "./auth.js";
+import { start } from "repl";
 
 /*
     ServerStats Interface is where all boolean/meta values will be stored
@@ -56,10 +59,18 @@ export default class ServerFactory {
         this.emitter = new Emittery();
     }
 
-    /**
-     * ? this method is currently empty as there is nothing to preprocess
-     */
     public async preprocess() {
+        this.app.use(express.urlencoded({
+            extended: true
+        }));
+        this.app.use(express.json());
+        this.app.use(cookieParser())
+
+        this.app.use(async (req, res, next) => {
+            req.authRequest = auth.handleRequest(req, res);
+            req.session = await req.authRequest.validate();
+            next();
+        })
     }
 
     /*
