@@ -17,6 +17,7 @@ model User {
 
   auth_session UserSession[]
   key          UserKey[]
+  Room         Room[]
 }
 
 model UserSession {
@@ -38,4 +39,24 @@ model UserKey {
   user            User    @relation(references: [id], fields: [user_id], onDelete: Cascade)
 
   @@index([user_id])
+}
+
+model Room {
+  id String @id @default(cuid()) @map("_id")
+
+  name       String
+  visibility Visibility @default(UNLISTED)
+  password   String?
+
+  owner   User   @relation(fields: [ownerId], references: [id])
+  ownerId String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Visibility {
+  PUBLIC
+  UNLISTED
+  PRIVATE
 }
